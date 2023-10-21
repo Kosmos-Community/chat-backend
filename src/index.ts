@@ -9,7 +9,7 @@ const io = new Server(server, {
     origin: "*",
   },
 });
-const port = 4000;
+const port = process.env.PORT || 3001;
 
 let onlineUsers = 0;
 
@@ -37,5 +37,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
