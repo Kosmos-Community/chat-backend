@@ -12,7 +12,7 @@ export function socketHandler(socket: Socket) {
       "newMessage",
       socket.handshake.auth.username,
       msg,
-      new Date().getTime()
+      new Date().toUTCString()
     );
   });
 
