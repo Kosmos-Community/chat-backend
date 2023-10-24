@@ -1,39 +1,22 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { socketHandler } from "./sockets";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
+const port = process.env.PORT || 3001;
+
+export const io = new Server(server, {
   cors: {
     origin: "*",
   },
 });
-const port = process.env.PORT || 3001;
 
-let onlineUsers = 0;
+io.on("connection", socketHandler);
 
 app.get("/", (req, res) => {
   res.send({ message: "Server is running." });
-});
-
-io.on("connection", (socket) => {
-  onlineUsers += 1;
-  io.emit("onlineUsers", onlineUsers);
-
-  socket.on("message", (msg) => {
-    io.emit(
-      "newMessage",
-      socket.handshake.auth.username,
-      msg,
-      new Date().toLocaleTimeString()
-    );
-  });
-
-  socket.on("disconnect", () => {
-    onlineUsers -= 1;
-    io.emit("onlineUsers", onlineUsers);
-  });
 });
 
 server.listen(port, () => {
